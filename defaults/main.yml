@@ -25,7 +25,7 @@ apt_other_repos: []
 
 # Which base mirror to use for Debian and Ubuntu
 debian_repo_mirror: 'http://ftp.debian.org/debian/'
-ubuntu_repo_mirror: 'http://nl.archive.ubuntu.com/ubuntu/'
+ubuntu_repo_mirror: 'http://archive.ubuntu.com/ubuntu/'
 
 # Unattended upgrades settings
 #  - Enable the update/upgrade script (0=disable)
