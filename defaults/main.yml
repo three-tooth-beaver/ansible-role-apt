@@ -1,0 +1,106 @@
+---
+# List of repository keys that can be retrieved using keyservers
+# This variable is set by merging vars that end with _apt_repo_keys_keyserver
+# to the list below. E.g.
+#
+# group1_apt_repo_keys_keyserver:
+#    - { name: 'example', keyid: 'xxxx'}
+apt_repo_keys_keyserver: []
+
+# List of repository keys that can be retrieved from a specific location
+# This variable is set by merging vars that end with _apt_repo_keys_url
+# to the list below. E.g.
+#
+# group1_apt_repo_keys_url:
+#    - { name: 'example', keyid: 'xxxx', url: 'http://example.com/pub.gpg' }
+apt_repo_keys_url: []
+
+# List of repositories
+# This variable is set by merging vars that end with _apt_other_repos
+# to the list below. E.g.
+#
+# group1_apt_other_repos:
+#   - { name: 'example', url: 'http://repository.example.com', release: 'stable', repos: 'main' }
+apt_other_repos: []
+
+# Which base mirror to use for Debian and Ubuntu
+debian_repo_mirror: 'http://ftp.debian.org/debian/'
+ubuntu_repo_mirror: 'http://nl.archive.ubuntu.com/ubuntu/'
+
+# Unattended upgrades settings
+#  - Enable the update/upgrade script (0=disable)
+apt_periodic_enable: 1
+
+#  - Send report mail to root
+#      0:  no report             (or null string)
+#      1:  progress report       (actually any string)
+#      2:  + command outputs     (remove -qq, remove 2>/dev/null, add -d)
+#      3:  + trace on
+apt_periodic_verbose: 0
+
+#  - Do "apt-get update" automatically every n-days (0=disable)
+apt_periodic_update: 1
+
+#  - Run the "unattended-upgrade" security upgrade script
+#    every n-days (0=disabled)
+apt_periodic_upgradeinterval: 1
+
+#  - Do "apt-get upgrade --download-only" every n-days (0=disable)
+apt_periodic_download: 1
+
+#  - Use debdelta-upgrade to download updates if available (0=disable)
+apt_periodic_debdelta: 1
+
+#  - Backup after n-days if archive contents changed.(0=disable)
+apt_periodic_backupinterval: 0
+
+#  - Backup level.(0=disable), 1 is invalid.
+apt_periodic_backuplevel: 3
+
+#  - Do "apt-get autoclean" every n-days (0=disable)
+apt_periodic_cleaninterval: 7
+
+#  - Set maximum allowed age of a cache package file. (0=disable)
+apt_periodic_maxage: 0
+
+#  - Set minimum age of a package file. If a file is younger it
+#    will not be deleted (0=disable).
+apt_periodic_minage: 0
+
+#  - Set maximum size of the cache in MB (0=disable).
+apt_periodic_maxsize: 0
+
+# Which update origins are automatically installed
+apt_unattended_origins:
+  - "origin=Example Repo,label=Internal"
+
+# Which packages are blacklisted for automatic upgrades
+apt_unattended_package_blacklist:
+  - ''
+
+# Run 'dpkg --force-confold --configure -a' before updating
+apt_unattended_fix_interrupted_dpkg: true
+
+# Run the upgrade in small steps, so it can be safely interrupted
+apt_unattended_minimal_steps: false
+
+# Run the upgrade on system shutdown
+apt_unattended_on_shutdown: false
+
+# Email address to send reports to
+apt_unattended_mail_address: "{{ admin_email }}"
+
+# Only send email on failure
+apt_unattended_mail_onlyonerror: true
+
+# Run 'apt-get autoremove' after upgrading
+apt_unattended_remove_unused_deps: true
+
+# Automatically reboot the system, WARNING: WITHOUT CONFIRMATION!
+apt_unattended_autoreboot: false
+
+# If enabled, reboot at the following time
+apt_unattended_autoreboot_time: '02:00'
+
+# Limit APT's bandwidth usage, e.g. 5000 Kbit/sec
+apt_unattended_downloadlimit: 5000
