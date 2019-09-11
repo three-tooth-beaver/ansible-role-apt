@@ -1,0 +1,28 @@
+// {{ ansible_managed }}
+Unattended-Upgrade::Origins-Pattern {
+  {% if ansible_distribution == 'Debian' -%}
+  "origin=Debian,codename=${distro_codename},label=Debian-Security;"
+  {% elif ansible_distribution == 'Ubuntu' -%}
+  "${distro_id} {$distro_codename}-security";
+	"${distro_id} {$distro_codename}-updates";
+  {% endif %}
+  {%- for origin in apt_unattended_origins -%}
+  "{{ origin }}";
+  {% endfor %}
+};
+
+Unattended-Upgrade::Package-Blacklist {
+  {% for package in apt_unattended_package_blacklist %}
+  "{{ package }}";
+  {% endfor %}
+};
+
+Unattended-Upgrade::AutoFixInterruptedDpkg "{{ apt_unattended_fix_interrupted_dpkg }}";
+Unattended-Upgrade::MinimalSteps "{{ apt_unattended_minimal_steps }}";
+Unattended-Upgrade::InstallOnShutdown "{{ apt_unattended_on_shutdown }}";
+Unattended-Upgrade::Mail "{{ apt_unattended_mail_address }}";
+Unattended-Upgrade::MailOnlyOnError "{{ apt_unattended_mail_onlyonerror }}";
+Unattended-Upgrade::Remove-Unused-Dependencies "{{ apt_unattended_remove_unused_deps }}";
+Unattended-Upgrade::Automatic-Reboot "{{ apt_unattended_autoreboot }}";
+Unattended-Upgrade::Automatic-Reboot-Time "{{ apt_unattended_autoreboot_time }}";
+Acquire::http::Dl-Limit "{{ apt_unattended_downloadlimit }}";

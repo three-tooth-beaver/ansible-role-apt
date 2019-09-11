@@ -1,0 +1,87 @@
+---
+# Configure repositories, keys and automatic upgrades
+- name: 'Merge repo_keys_keyserver (requires Ansible Merge Vars)'
+  merge_vars:
+    suffix_to_merge: '_apt_repo_keys_keyserver'
+    merged_var: 'apt_repo_keys_keyserver'
+    expected_type: 'list'
+
+- name: 'Merge repo_keys_url (requires Ansible Merge Vars)'
+  merge_vars:
+    suffix_to_merge: '_apt_repo_keys_url'
+    merged_var: 'apt_repo_keys_url'
+    expected_type: 'list'
+
+- name: 'Merge other_repos (requires Ansible Merge Vars)'
+  merge_vars:
+    suffix_to_merge: '_apt_other_repos'
+    merged_var: 'apt_other_repos'
+    expected_type: 'list'
+
+- name: 'Configure APT'
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: 'apt-periodic.j2', dest: '/etc/apt/apt.conf.d/10periodic' }
+    - { src: 'apt-unattended.j2', dest: '/etc/apt/apt.conf.d/50unattended-upgrades' }
+    - { src: 'apt-proxy.j2', dest: '/etc/apt/apt.conf.d/01proxy' }
+
+- name: 'Update sources'
+  apt:
+      update_cache: true
+  changed_when: false
+
+- name: 'Install supporting packages'
+  apt:
+    name:
+      - 'apt-transport-https'
+      - 'dirmngr'
+      - 'unattended-upgrades'
+    state: 'present'
+
+- name: 'Configure repo keys from keyserver'
+  # Not using the apt_key module here, as apt-key is too stupid to use APT's proxy
+  shell: '/usr/bin/gpg --no-default-keyring --keyring /tmp/tmpring.gpg --keyserver hkp://{{ repository_keyserver }}:80 --recv-keys {{ item.keyid }} && gpg --no-default-keyring --keyring /tmp/tmpring.gpg --export --armor {{ item.keyid }} | /usr/bin/apt-key add -'
+  loop:
+    - "{{ apt_repo_keys_keyserver|default([]) }}"
+  changed_when: false
+
+- name: 'Configure repo keys from URLs'
+  apt_key:
+    id: "{{ item.keyid }}"
+    url: "{{ item.url }}"
+  loop:
+    - "{{ apt_repo_keys_url|default([]) }}"
+
+- name: 'Clean up default sources.list'
+  copy:
+    dest: '/etc/apt/sources.list'
+    content: '# Repositories are managed by Ansible'
+
+- name: 'Configure Debian main repos'
+  apt_repository:
+    repo: "deb {{ debian_repo_mirror }}/{{ item.distro }} {{ item.release }} main contrib non-free"
+    filename: 'debian'
+  with_items:
+    - { distro: 'debian', release: '{{ ansible_distribution_release }}' }
+    - { distro: 'debian', release: '{{ ansible_distribution_release }}-updates' }
+    - { distro: 'debian-security', release: '{{ ansible_distribution_release }}/updates' }
+  when: ansible_distribution == "Debian"
+
+- name: 'Configure Ubuntu main repos'
+  apt_repository:
+    repo: "deb {{ ubuntu_repo_mirror }} {{ item }} main restricted universe multiverse"
+    filename: 'ubuntu'
+  with_items:
+    - "{{ ansible_distribution_release }}"
+    - "{{ ansible_distribution_release }}-updates"
+    - "{{ ansible_distribution_release }}-security"
+  when: ansible_distribution == "Ubuntu"
+
+- name: 'Configure other repos'
+  apt_repository:
+    repo: "deb {{ item.url }} {{ item.release }} {{ item.repos }}"
+    filename: "{{ item.name }}"
+  with_items:
+    - "{{ apt_other_repos|default([]) }}"
