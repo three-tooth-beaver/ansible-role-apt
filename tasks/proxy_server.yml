@@ -1,0 +1,12 @@
+---
+# Install an APT proxy server for use with the rest of this role
+- name: 'Install software'
+  apt:
+    name: 'squid-deb-proxy'
+    state: 'present'
+
+- name: 'Enable service'
+  systemd:
+    name: 'squid-deb-proxy'
+    state: 'started'
+    enabled: true

@@ -2,20 +2,20 @@
 # Configure repositories, keys and automatic upgrades
 - name: 'Merge repo_keys_keyserver (requires Ansible Merge Vars)'
   merge_vars:
-    suffix_to_merge: '_apt_repo_keys_keyserver'
-    merged_var: 'apt_repo_keys_keyserver'
+    suffix_to_merge: '_apt_repo_keys_keyserver__to_merge'
+    merged_var_name: 'apt_repo_keys_keyserver'
     expected_type: 'list'
 
 - name: 'Merge repo_keys_url (requires Ansible Merge Vars)'
   merge_vars:
-    suffix_to_merge: '_apt_repo_keys_url'
-    merged_var: 'apt_repo_keys_url'
+    suffix_to_merge: '_apt_repo_keys_url__to_merge'
+    merged_var_name: 'apt_repo_keys_url'
     expected_type: 'list'
 
 - name: 'Merge other_repos (requires Ansible Merge Vars)'
   merge_vars:
-    suffix_to_merge: '_apt_other_repos'
-    merged_var: 'apt_other_repos'
+    suffix_to_merge: 'apt_other_repos__to_merge'
+    merged_var_name: 'apt_other_repos'
     expected_type: 'list'
 
 - name: 'Configure APT'

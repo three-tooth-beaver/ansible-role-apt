@@ -3,29 +3,29 @@
 # This variable is set by merging vars that end with _apt_repo_keys_keyserver
 # to the list below. E.g.
 #
-# group1_apt_repo_keys_keyserver:
-#    - { name: 'example', keyid: 'xxxx'}
-apt_repo_keys_keyserver: []
+#example_apt_repo_keys_keyserver__to_merge:
+#  - { name: 'example', keyid: 'xxxx'}
 
 # List of repository keys that can be retrieved from a specific location
 # This variable is set by merging vars that end with _apt_repo_keys_url
 # to the list below. E.g.
 #
-# group1_apt_repo_keys_url:
-#    - { name: 'example', keyid: 'xxxx', url: 'http://example.com/pub.gpg' }
-apt_repo_keys_url: []
+#example_apt_repo_keys_url__to_merge:
+#  - { name: 'example', keyid: 'xxxx', url: 'http://example.com/pub.gpg' }
 
 # List of repositories
 # This variable is set by merging vars that end with _apt_other_repos
 # to the list below. E.g.
 #
-# group1_apt_other_repos:
-#   - { name: 'example', url: 'http://repository.example.com', release: 'stable', repos: 'main' }
-apt_other_repos: []
+#example_apt_other_repos__to_merge:
+#  - { name: 'example', url: 'http://repository.example.com', release: 'stable', repos: 'main' }
 
 # Which base mirror to use for Debian and Ubuntu
 debian_repo_mirror: 'http://ftp.debian.org/debian/'
 ubuntu_repo_mirror: 'http://archive.ubuntu.com/ubuntu/'
+
+# Which keyserver to use
+repository_keyserver: 'keyserver.ubuntu.com'
 
 # Unattended upgrades settings
 #  - Enable the update/upgrade script (0=disable)
