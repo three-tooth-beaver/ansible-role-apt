@@ -22,7 +22,7 @@
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-  with_items:
+  loop:
     - { src: 'apt-periodic.j2', dest: '/etc/apt/apt.conf.d/10periodic' }
     - { src: 'apt-unattended.j2', dest: '/etc/apt/apt.conf.d/50unattended-upgrades' }
     - { src: 'apt-proxy.j2', dest: '/etc/apt/apt.conf.d/01proxy' }
@@ -45,7 +45,7 @@
   shell: '/usr/bin/gpg --no-default-keyring --keyring /tmp/tmpring.gpg --keyserver hkp://{{ repository_keyserver }}:80 --recv-keys {{ item.keyid }} && gpg --no-default-keyring --keyring /tmp/tmpring.gpg --export --armor {{ item.keyid }} | /usr/bin/apt-key add -'
   loop:
     - "{{ apt_repo_keys_keyserver|default([]) }}"
-  changed_when: false
+  when: apt_repo_keys_keyserver | length > 0
 
 - name: 'Configure repo keys from URLs'
   apt_key:
@@ -53,6 +53,7 @@
     url: "{{ item.url }}"
   loop:
     - "{{ apt_repo_keys_url|default([]) }}"
+  when: apt_repo_keys_url | length > 0
 
 - name: 'Clean up default sources.list'
   copy:
@@ -63,7 +64,7 @@
   apt_repository:
     repo: "deb {{ debian_repo_mirror }}/{{ item.distro }} {{ item.release }} main contrib non-free"
     filename: 'debian'
-  with_items:
+  loop:
     - { distro: 'debian', release: '{{ ansible_distribution_release }}' }
     - { distro: 'debian', release: '{{ ansible_distribution_release }}-updates' }
     - { distro: 'debian-security', release: '{{ ansible_distribution_release }}/updates' }
@@ -73,7 +74,7 @@
   apt_repository:
     repo: "deb {{ ubuntu_repo_mirror }} {{ item }} main restricted universe multiverse"
     filename: 'ubuntu'
-  with_items:
+  loop:
     - "{{ ansible_distribution_release }}"
     - "{{ ansible_distribution_release }}-updates"
     - "{{ ansible_distribution_release }}-security"
@@ -83,5 +84,6 @@
   apt_repository:
     repo: "deb {{ item.url }} {{ item.release }} {{ item.repos }}"
     filename: "{{ item.name }}"
-  with_items:
+  loop:
     - "{{ apt_other_repos|default([]) }}"
+  when: apt_other_repos | length > 0

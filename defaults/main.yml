@@ -21,8 +21,8 @@
 #  - { name: 'example', url: 'http://repository.example.com', release: 'stable', repos: 'main' }
 
 # Which base mirror to use for Debian and Ubuntu
-debian_repo_mirror: 'http://ftp.debian.org/debian/'
-ubuntu_repo_mirror: 'http://archive.ubuntu.com/ubuntu/'
+debian_repo_mirror: 'http://ftp.nl.debian.org/'
+ubuntu_repo_mirror: 'http://archive.ubuntu.com/'
 
 # Which keyserver to use
 repository_keyserver: 'keyserver.ubuntu.com'
