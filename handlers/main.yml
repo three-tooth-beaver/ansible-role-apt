@@ -1,0 +1,5 @@
+---
+- name: 'reload squid'
+  service:
+    name: 'squid-deb-proxy'
+    state: 'reloaded'
