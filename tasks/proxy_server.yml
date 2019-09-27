@@ -10,3 +10,18 @@
     name: 'squid-deb-proxy'
     state: 'started'
     enabled: true
+
+- name: 'Ensure whitelist'
+  template:
+    src: '10-managed.j2'
+    dest: '/etc/squid-deb-proxy/mirror-dstdomain.acl.d/10-managed'
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+  register: 'whitelist_ensured'
+
+- name: 'Reload service'
+  systemd:
+    name: 'squid-deb-proxy'
+    state: 'reloaded'
+  when: whitelist_ensured.changed

@@ -20,6 +20,11 @@
 #example_apt_other_repos__to_merge:
 #  - { name: 'example', url: 'http://repository.example.com', release: 'stable', repos: 'main' }
 
+# A list of domains to whitelist in the proxy
+apt_proxy_whitelist:
+  - 'ftp.nl.debian.org'
+  - 'archive.ubuntu.com'
+
 # Which base mirror to use for Debian and Ubuntu
 debian_repo_mirror: 'http://ftp.nl.debian.org/'
 ubuntu_repo_mirror: 'http://archive.ubuntu.com/'

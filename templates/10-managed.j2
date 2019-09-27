@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for url in apt_proxy_whitelist %}
+{{ url }}
+{% endfor %}
