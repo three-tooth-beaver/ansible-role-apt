@@ -6,7 +6,7 @@
     state: 'present'
 
 - name: 'Enable service'
-  systemd:
+  service:
     name: 'squid-deb-proxy'
     state: 'started'
     enabled: true
@@ -18,10 +18,4 @@
     owner: 'root'
     group: 'root'
     mode: 0644
-  register: 'whitelist_ensured'
-
-- name: 'Reload service'
-  systemd:
-    name: 'squid-deb-proxy'
-    state: 'reloaded'
-  when: whitelist_ensured.changed
+  notify: 'reload squid'
