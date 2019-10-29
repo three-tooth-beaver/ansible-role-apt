@@ -24,7 +24,7 @@
         image: "quay.io/ansible/molecule",
         commands: [
           "ansible-galaxy login --github-token $$GITHUB_TOKEN",
-          "ansible-galaxy import Thulium-Drake ansible-role-apt  --role-name=apt",
+          "ansible-galaxy import Thulium-Drake ansible-role-apt --role-name=apt",
         ],
         environment:
           { GITHUB_TOKEN: { from_secret: "github_token" } },
