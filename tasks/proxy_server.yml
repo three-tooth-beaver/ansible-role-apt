@@ -4,6 +4,7 @@
   apt:
     name: 'squid-deb-proxy'
     state: 'present'
+    update_cache: true
 
 - name: 'Enable service'
   service:
