@@ -20,12 +20,14 @@
 
 - name: 'Configure APT'
   template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+    src: "{{ file.src }}"
+    dest: "{{ file.dest }}"
   loop:
     - { src: 'apt-periodic.j2', dest: '/etc/apt/apt.conf.d/10periodic' }
     - { src: 'apt-unattended.j2', dest: '/etc/apt/apt.conf.d/50unattended-upgrades' }
     - { src: 'apt-proxy.j2', dest: '/etc/apt/apt.conf.d/01proxy' }
+  loop_control:
+    loop_var: 'file'
 
 - name: 'Update sources'
   apt:
@@ -40,19 +42,27 @@
       - 'unattended-upgrades'
     state: 'present'
 
+- name: 'Ensure .gnupg'
+  file:
+    path: '/root/.gnupg'
+    state: 'directory'
+    mode: 0700
+
 - name: 'Configure repo keys from keyserver'
   # Not using the apt_key module here, as apt-key is too stupid to use APT's proxy
-  shell: '/usr/bin/gpg --no-default-keyring --keyring /tmp/tmpring.gpg --keyserver hkp://{{ repository_keyserver }}:80 --recv-keys {{ item.keyid }} && gpg --no-default-keyring --keyring /tmp/tmpring.gpg --export --armor {{ item.keyid }} | /usr/bin/apt-key add -'
-  loop:
-    - "{{ apt_repo_keys_keyserver|default([]) }}"
+  shell: '/usr/bin/gpg --no-default-keyring --keyring /tmp/tmpring.gpg --keyserver hkp://{{ repository_keyserver }}:80 --keyserver-options http-proxy={{ apt_proxy_url }} --recv-keys {{ keyserver_key.keyid }} && gpg --no-default-keyring --keyring /tmp/tmpring.gpg --export --armor {{ keyserver_key.keyid }} | /usr/bin/apt-key add -'
+  loop: "{{ apt_repo_keys_keyserver|default([]) }}"
+  loop_control:
+    loop_var: 'keyserver_key'
   when: apt_repo_keys_keyserver | length > 0
 
 - name: 'Configure repo keys from URLs'
   apt_key:
-    id: "{{ item.keyid }}"
-    url: "{{ item.url }}"
-  loop:
-    - "{{ apt_repo_keys_url|default([]) }}"
+    id: "{{ url_key.keyid }}"
+    url: "{{ url_key.url }}"
+  loop: "{{ apt_repo_keys_url|default([]) }}"
+  loop_control:
+    loop_var: 'url_key'
   when: apt_repo_keys_url | length > 0
 
 - name: 'Clean up default sources.list'
@@ -62,28 +72,33 @@
 
 - name: 'Configure Debian main repos'
   apt_repository:
-    repo: "deb {{ debian_repo_mirror }}/{{ item.distro }} {{ item.release }} main contrib non-free"
+    repo: "deb {{ debian_repo_mirror }}/{{ deb_repo.distro }} {{ deb_repo.release }} main contrib non-free"
     filename: 'debian'
   loop:
     - { distro: 'debian', release: '{{ ansible_distribution_release }}' }
     - { distro: 'debian', release: '{{ ansible_distribution_release }}-updates' }
     - { distro: 'debian-security', release: '{{ ansible_distribution_release }}/updates' }
+  loop_control:
+    loop_var: 'deb_repo'
   when: ansible_distribution == "Debian"
 
 - name: 'Configure Ubuntu main repos'
   apt_repository:
-    repo: "deb {{ ubuntu_repo_mirror }} {{ item }} main restricted universe multiverse"
+    repo: "deb {{ ubuntu_repo_mirror }} {{ ubt_repo }} main restricted universe multiverse"
     filename: 'ubuntu'
   loop:
     - "{{ ansible_distribution_release }}"
     - "{{ ansible_distribution_release }}-updates"
     - "{{ ansible_distribution_release }}-security"
+  loop_control:
+    loop_var: 'ubt_repo'
   when: ansible_distribution == "Ubuntu"
 
 - name: 'Configure other repos'
   apt_repository:
-    repo: "deb {{ item.url }} {{ item.release }} {{ item.repos }}"
-    filename: "{{ item.name }}"
-  loop:
-    - "{{ apt_other_repos|default([]) }}"
+    repo: "deb {{ repo.url }} {{ repo.release }} {{ repo.repos }}"
+    filename: "{{ repo.name }}"
+  loop: "{{ apt_other_repos|default([]) }}"
+  loop_control:
+    loop_var: 'repo'
   when: apt_other_repos | length > 0
