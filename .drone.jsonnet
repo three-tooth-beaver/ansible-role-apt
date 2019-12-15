@@ -1,3 +1,21 @@
+local Converge(distro) = {
+  name: "Converge - "+distro,
+  image: "quay.io/ansible/molecule",
+  commands: [
+    "pip install -U ansible ansible-merge-vars",
+    "molecule destroy",
+    "molecule converge",
+    "molecule idempotence",
+    "molecule destroy",
+  ],
+  environment:
+    { MOLECULE_DISTRO: +distro, },
+  privileged: true,
+  volumes: [
+    { name: "docker", path: "/var/run/docker.sock" },
+  ],
+};
+
 [
   {
     name: "Lint",
@@ -12,6 +30,24 @@
         ]
       }
     ]
+  },
+  {
+    kind: "pipeline",
+    name: "Test",
+    steps: [
+      Converge("debian9"),
+      Converge("debian10"),
+      Converge("ubuntu1804"),
+    ],
+    volumes: [
+      { name: "docker",
+        host: { path: "/var/run/docker.sock" }
+      },
+    ],
+
+    depends_on: [
+      "Lint",
+    ],
   },
   {
     name: "Publish",
@@ -31,7 +67,7 @@
       },
     ],
     depends_on: [
-      "Lint",
+      "Test",
     ],
   },
 ]

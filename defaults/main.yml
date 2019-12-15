@@ -31,7 +31,7 @@ apt_proxy_whitelist:
 
 # Which base mirror to use for Debian and Ubuntu
 debian_repo_mirror: 'http://ftp.nl.debian.org/'
-ubuntu_repo_mirror: 'http://archive.ubuntu.com/'
+ubuntu_repo_mirror: 'http://archive.ubuntu.com/ubuntu'
 
 # Which keyserver to use
 repository_keyserver: 'keyserver.ubuntu.com'
