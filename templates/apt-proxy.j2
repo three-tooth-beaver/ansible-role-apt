@@ -1,2 +1,5 @@
 # {{ ansible_managed }}
-Acquire::http::proxy "{{ apt_proxy_url }}";
+{% if apt_proxy_url is defined -%}Acquire::http::proxy "{{ apt_proxy_url }}";
+{%- else -%}
+# Proxy not configured
+{%- endif -%}

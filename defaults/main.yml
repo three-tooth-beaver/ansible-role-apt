@@ -19,7 +19,11 @@
 #
 #example_apt_other_repos__to_merge:
 #  - { name: 'example', url: 'http://repository.example.com', release: 'stable', repos: 'main' }
-
+#
+# Example proxy setting
+#
+# apt_proxy_url: http://proxy.example.com:8000
+#
 # A list of domains to whitelist in the proxy
 apt_proxy_whitelist:
   - 'ftp.nl.debian.org'
@@ -93,7 +97,7 @@ apt_unattended_minimal_steps: false
 apt_unattended_on_shutdown: false
 
 # Email address to send reports to
-apt_unattended_mail_address: "{{ admin_email }}"
+apt_unattended_mail_address: 'root@localhost'
 
 # Only send email on failure
 apt_unattended_mail_onlyonerror: true

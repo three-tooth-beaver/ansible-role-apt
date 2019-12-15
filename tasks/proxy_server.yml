@@ -20,3 +20,5 @@
     group: 'root'
     mode: 0644
   notify: 'reload squid'
+
+- meta: 'flush_handlers'

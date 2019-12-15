@@ -29,47 +29,6 @@
   loop_control:
     loop_var: 'file'
 
-- name: 'Update sources'
-  apt:
-      update_cache: true
-  changed_when: false
-
-- name: 'Install supporting packages'
-  apt:
-    name:
-      - 'apt-transport-https'
-      - 'dirmngr'
-      - 'unattended-upgrades'
-    state: 'present'
-
-- name: 'Ensure .gnupg'
-  file:
-    path: '/root/.gnupg'
-    state: 'directory'
-    mode: 0700
-
-- name: 'Configure repo keys from keyserver'
-  # Not using the apt_key module here, as apt-key is too stupid to use APT's proxy
-  shell: '/usr/bin/gpg --no-default-keyring --keyring /tmp/tmpring.gpg --keyserver hkp://{{ repository_keyserver }}:80 --keyserver-options http-proxy={{ apt_proxy_url }} --recv-keys {{ keyserver_key.keyid }} && gpg --no-default-keyring --keyring /tmp/tmpring.gpg --export --armor {{ keyserver_key.keyid }} | /usr/bin/apt-key add -'
-  loop: "{{ apt_repo_keys_keyserver|default([]) }}"
-  loop_control:
-    loop_var: 'keyserver_key'
-  when: apt_repo_keys_keyserver | length > 0
-
-- name: 'Configure repo keys from URLs'
-  apt_key:
-    id: "{{ url_key.keyid }}"
-    url: "{{ url_key.url }}"
-  loop: "{{ apt_repo_keys_url|default([]) }}"
-  loop_control:
-    loop_var: 'url_key'
-  when: apt_repo_keys_url | length > 0
-
-- name: 'Clean up default sources.list'
-  copy:
-    dest: '/etc/apt/sources.list'
-    content: '# Repositories are managed by Ansible'
-
 - name: 'Configure Debian main repos'
   apt_repository:
     repo: "deb {{ debian_repo_mirror }}/{{ deb_repo.distro }} {{ deb_repo.release }} main contrib non-free"
@@ -93,6 +52,57 @@
   loop_control:
     loop_var: 'ubt_repo'
   when: ansible_distribution == "Ubuntu"
+
+- name: 'Clean up default sources'
+  template:
+    src: 'sources.list.j2'
+    dest: '/etc/apt/sources.list'
+
+- name: 'Install supporting packages'
+  apt:
+    name:
+      - 'apt-transport-https'
+      - 'dirmngr'
+      - 'unattended-upgrades'
+    state: 'present'
+
+- name: 'Ensure .gnupg'
+  file:
+    path: '/root/.gnupg'
+    state: 'directory'
+    mode: 0700
+
+  # Not using the apt_key module here, as apt-key is too stupid to use APT's proxy
+- name: 'Configure repo keys from keyserver'
+  shell:
+    cmd: |
+      set -o pipefail
+      /usr/bin/gpg \
+        --no-default-keyring \
+        --keyring /tmp/tmpring.gpg \
+        --keyserver hkp://{{ repository_keyserver }}:80 \
+        {%- if apt_proxy_url is defined -%}--keyserver-options http-proxy={{ apt_proxy_url }} \{%- endif -%}
+        --recv-keys {{ keyserver_key.keyid }}
+      /usr/bin/gpg \
+        --no-default-keyring \
+        --keyring /tmp/tmpring.gpg \
+        --export \
+        --armor {{ keyserver_key.keyid }} | /usr/bin/apt-key add -
+  args:
+    executable: '/bin/bash'
+  loop: "{{ apt_repo_keys_keyserver|default([]) }}"
+  loop_control:
+    loop_var: 'keyserver_key'
+  when: apt_repo_keys_keyserver | length > 0
+
+- name: 'Configure repo keys from URLs'
+  apt_key:
+    id: "{{ url_key.keyid }}"
+    url: "{{ url_key.url }}"
+  loop: "{{ apt_repo_keys_url|default([]) }}"
+  loop_control:
+    loop_var: 'url_key'
+  when: apt_repo_keys_url | length > 0
 
 - name: 'Configure other repos'
   apt_repository:

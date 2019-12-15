@@ -9,7 +9,7 @@ lint:
     config-file: 'molecule/default/yamllint.yml'
 platforms:
   - name: "docker"
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian9}-ansible:latest"
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian10}-ansible:latest"
     command: '/lib/systemd/systemd'
     pre_build_image: true
     volumes:

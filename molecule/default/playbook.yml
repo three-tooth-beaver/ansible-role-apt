@@ -1,5 +1,26 @@
 ---
-- name: Converge
-  hosts: all
-  roles:
-    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+- name: 'Converge'
+  hosts: 'all'
+  tasks:
+    - name: 'Install proxy server'
+      import_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+        tasks_from: 'proxy_server.yml'
+    - name: 'Configure APT'
+      import_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+    - name: 'Install test package'
+      apt:
+        name: 'ansible-apt-test-en'
+        state: 'present'
+        update_cache: true
+  vars:
+    ansible_apt_other_repos__to_merge:
+      - { name: 'test-repo', url: 'https://repo.element-networks.nl', release: 'custom', repos: 'main' }
+    ansible_apt_repo_keys_url__to_merge:
+      - { name: 'test-repo', keyid: '85B3FD3F6E73B8A7DE50CB165BD917897D9D968D', url: 'https://repo.element-networks.nl/public.gpg' }
+    apt_proxy_url: 'http://localhost:8000'
+    apt_proxy_whitelist:
+      - 'ftp.nl.debian.org'
+      - 'archive.ubuntu.com'
+      - 'repo.element-networks.nl'

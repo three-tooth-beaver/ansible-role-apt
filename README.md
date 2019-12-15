@@ -16,3 +16,5 @@ This role uses https://github.com/leapfrogonline/ansible-merge-vars/, which has 
 ```
 pip install ansible-merge-vars
 ```
+
+This role functions best if you already have python-apt installed on the target systems. If this is missing, you might run into issues when Ansible tries to configure the repositories.
