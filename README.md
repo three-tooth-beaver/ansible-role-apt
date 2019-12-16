@@ -1,3 +1,5 @@
+[![Build Status](https://drone.element-networks.nl/api/badges/Element-Networks/ansible-role-apt/status.svg)](https://drone.element-networks.nl/Element-Networks/ansible-role-apt)
+
 # Ansible role to configure APT
 This role provides a means to configure APT on Debian and Ubuntu systems.
 
