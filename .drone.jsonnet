@@ -36,7 +36,12 @@ local Converge(distro) = {
           { name: "docker", path: "/var/run/docker.sock" },
         ],
       }
-    ]
+    ],
+    volumes: [
+      { name: "docker",
+        host: { path: "/var/run/docker.sock" }
+      },
+    ],
   },
   {
     kind: "pipeline",
