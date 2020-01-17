@@ -26,8 +26,7 @@ local Converge(distro) = {
         name: "Lint code",
         image: "quay.io/ansible/molecule",
         commands: [
-          "pip install -U molecule",
-          "molecule --version",
+          "pip install -U ansible molecule",
           "molecule lint",
           "molecule syntax"
         ],
