@@ -1,0 +1,12 @@
+---
+- name: 'Verify'
+  hosts: 'all'
+  check_mode: true
+  gather_facts: false
+  tasks:
+    - name: 'Ensure test package installed'
+      apt:
+        name: 'ansible-apt-test-en'
+        state: 'present'
+      register: result
+      failed_when: result.changed
