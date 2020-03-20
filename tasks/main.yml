@@ -79,6 +79,7 @@
         | /usr/bin/apt-key add -
   args:
     executable: '/bin/bash'
+  changed_when: false
   loop: "{{ apt_repo_keys_keyserver|default([]) }}"
   loop_control:
     loop_var: 'keyserver_key'
@@ -96,6 +97,7 @@
         | /usr/bin/apt-key add -
   args:
     executable: '/bin/bash'
+  changed_when: false
   loop: "{{ apt_repo_keys_url|default([]) }}"
   loop_control:
     loop_var: 'url_key'

@@ -18,7 +18,7 @@
     ansible_apt_other_repos__to_merge:
       - { name: 'test-repo', url: 'https://repo.element-networks.nl', release: 'custom', repos: 'main' }
     ansible_apt_repo_keys_url__to_merge:
-      - { name: 'test-repo', keyid: '85B3FD3F6E73B8A7DE50CB165BD917897D9D968D', url: 'https://repo.element-networks.nl/public.gpg' }
+      - { name: 'test-repo', url: 'https://repo.element-networks.nl/public.gpg' }
     apt_proxy_url: 'http://localhost:8000'
     apt_proxy_whitelist:
       - 'repo.element-networks.nl'
