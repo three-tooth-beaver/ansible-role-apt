@@ -2,7 +2,6 @@ local Converge(distro) = {
   name: "Converge - "+distro,
   image: "registry.element-networks.nl/tools/molecule",
   commands: [
-    "pip3 install -U ansible-merge-vars",
     "molecule destroy",
     "molecule converge",
     "molecule idempotence",
@@ -26,7 +25,6 @@ local Converge(distro) = {
         name: "Lint code",
         image: "registry.element-networks.nl/tools/molecule",
         commands: [
-          "pip3 install -U ansible-merge-vars ",
           "molecule lint",
           "molecule syntax"
         ],
