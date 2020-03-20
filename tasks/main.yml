@@ -64,30 +64,19 @@
       - 'apt-transport-https'
       - 'dirmngr'
       - 'unattended-upgrades'
+      - 'curl'
     state: 'present'
 
-- name: 'Ensure .gnupg'
-  file:
-    path: '/root/.gnupg'
-    state: 'directory'
-    mode: 0700
-
   # Not using the apt_key module here, as apt-key is too stupid to use APT's proxy
+  # Because GNUPG's HTTP implementation is also hot garbage, we use cURL
 - name: 'Configure repo keys from keyserver'
   shell:
     cmd: |
       set -o pipefail
-      /usr/bin/gpg \
-        --no-default-keyring \
-        --keyring /tmp/tmpring.gpg \
-        --keyserver hkp://{{ repository_keyserver }}:80 \
-        {%- if apt_proxy_url is defined -%}--keyserver-options http-proxy={{ apt_proxy_url }} \{%- endif -%}
-        --recv-keys {{ keyserver_key.keyid }}
-      /usr/bin/gpg \
-        --no-default-keyring \
-        --keyring /tmp/tmpring.gpg \
-        --export \
-        --armor {{ keyserver_key.keyid }} | /usr/bin/apt-key add -
+      /usr/bin/curl \
+        {%- if apt_proxy_url is defined -%}-x {{ apt_proxy_url }} \{%- endif %}
+        "http://{{ repository_keyserver }}/pks/lookup?op=get&search=0x{{ keyserver_key.keyid }}" \
+        | /usr/bin/apt-key add -
   args:
     executable: '/bin/bash'
   loop: "{{ apt_repo_keys_keyserver|default([]) }}"
@@ -95,10 +84,18 @@
     loop_var: 'keyserver_key'
   when: apt_repo_keys_keyserver | length > 0
 
+  # Not using the apt_key module here, as apt-key is too stupid to use APT's proxy
+  # Because GNUPG's HTTP implementation is also hot garbage, we use cURL
 - name: 'Configure repo keys from URLs'
-  apt_key:
-    id: "{{ url_key.keyid }}"
-    url: "{{ url_key.url }}"
+  shell:
+    cmd: |
+      set -o pipefail
+      /usr/bin/curl \
+        {%- if apt_proxy_url is defined -%}-x {{ apt_proxy_url }} \{%- endif %}
+        "{{ url_key.url }}" \
+        | /usr/bin/apt-key add -
+  args:
+    executable: '/bin/bash'
   loop: "{{ apt_repo_keys_url|default([]) }}"
   loop_control:
     loop_var: 'url_key'

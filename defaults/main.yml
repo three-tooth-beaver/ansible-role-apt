@@ -11,7 +11,7 @@
 # to the list below. E.g.
 #
 #example_apt_repo_keys_url__to_merge:
-#  - { name: 'example', keyid: 'xxxx', url: 'http://example.com/pub.gpg' }
+#  - { name: 'example', url: 'http://example.com/pub.gpg' }
 
 # List of repositories
 # This variable is set by merging vars that end with _apt_other_repos
