@@ -44,7 +44,6 @@ local Converge(distro) = {
     kind: "pipeline",
     name: "Test",
     steps: [
-      Converge("debian9"),
       Converge("debian10"),
       Converge("ubuntu1804"),
     ],
