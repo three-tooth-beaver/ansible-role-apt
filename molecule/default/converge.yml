@@ -16,7 +16,7 @@
         update_cache: true
   vars:
     ansible_apt_other_repos__to_merge:
-      - { name: 'test-repo', url: 'https://repo.element-networks.nl', release: 'custom', repos: 'main' }
+      - { name: 'test-repo', url: 'https://repo.element-networks.nl', release: 'ansible-test', repos: 'main' }
     ansible_apt_repo_keys_url__to_merge:
       - { name: 'test-repo', url: 'https://repo.element-networks.nl/public.gpg' }
     apt_proxy_url: 'http://localhost:8000'
