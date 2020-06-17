@@ -67,37 +67,25 @@
       - 'curl'
     state: 'present'
 
-  # Not using the apt_key module here, as apt-key is too stupid to use APT's proxy
-  # Because GNUPG's HTTP implementation is also hot garbage, we use cURL
+  # Rather clunky workaround, but the apt_key module does not
+  # support proxies yet: https://github.com/ansible/ansible/issues/31691
 - name: 'Configure repo keys from keyserver'
-  shell:
-    cmd: |
-      set -o pipefail
-      /usr/bin/curl \
-        {%- if apt_proxy_url is defined -%}-x {{ apt_proxy_url }} \{%- endif %}
-        "http://{{ repository_keyserver }}/pks/lookup?op=get&search=0x{{ keyserver_key.keyid }}" \
-        | /usr/bin/apt-key add -
-  args:
-    executable: '/bin/bash'
-  changed_when: false
+  apt_key:
+    data: "{{ lookup('url', 'http://{{ repository_keyserver }}/pks/lookup?op=get&search=0x{{ keyserver_key.keyid }}', split_lines=False) }}"
+  environment:
+    HTTP_PROXY: "{{ apt_proxy_url }}"
+    HTTPS_PROXY: "{{ apt_proxy_url }}"
   loop: "{{ apt_repo_keys_keyserver|default([]) }}"
   loop_control:
     loop_var: 'keyserver_key'
   when: apt_repo_keys_keyserver | length > 0
 
-  # Not using the apt_key module here, as apt-key is too stupid to use APT's proxy
-  # Because GNUPG's HTTP implementation is also hot garbage, we use cURL
 - name: 'Configure repo keys from URLs'
-  shell:
-    cmd: |
-      set -o pipefail
-      /usr/bin/curl \
-        {%- if apt_proxy_url is defined -%}-x {{ apt_proxy_url }} \{%- endif %}
-        "{{ url_key.url }}" \
-        | /usr/bin/apt-key add -
-  args:
-    executable: '/bin/bash'
-  changed_when: false
+  apt_key:
+    data: "{{ lookup('url', '{{ url_key.url }}', split_lines=False) }}"
+  environment:
+    HTTP_PROXY: "{{ apt_proxy_url }}"
+    HTTPS_PROXY: "{{ apt_proxy_url }}"
   loop: "{{ apt_repo_keys_url|default([]) }}"
   loop_control:
     loop_var: 'url_key'

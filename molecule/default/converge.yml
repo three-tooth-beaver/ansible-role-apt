@@ -19,6 +19,9 @@
       - { name: 'test-repo', url: 'http://repo.element-networks.nl', release: 'ansible-test', repos: 'main' }
     ansible_apt_repo_keys_url__to_merge:
       - { name: 'test-repo', url: 'http://repo.element-networks.nl/public.gpg' }
+    ansible__apt_repo_keys_keyserver__to_merge:
+      - { name: 'zabbix', keyid: 'A1848F5352D022B9471D83D0082AB56BA14FE591' }
     apt_proxy_url: 'http://localhost:8000'
     apt_proxy_whitelist:
       - 'repo.element-networks.nl'
+      - 'keyserver.ubuntu.com'
