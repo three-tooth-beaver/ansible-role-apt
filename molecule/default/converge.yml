@@ -22,7 +22,7 @@
     ansible__apt_repo_keys_keyserver__to_merge:
       - { name: 'zabbix', keyid: 'A1848F5352D022B9471D83D0082AB56BA14FE591' }
     ansible_apt_proxy_direct__to_merge:
-      - 'repo.example.com'
+      - 'repo.element-networks.nl'
     apt_proxy_url: 'http://localhost:8000'
     apt_proxy_whitelist:
       - 'repo.element-networks.nl'
