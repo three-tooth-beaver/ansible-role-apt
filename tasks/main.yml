@@ -18,6 +18,12 @@
     merged_var_name: 'apt_other_repos'
     expected_type: 'list'
 
+- name: 'Merge apt_proxy_direct (requires Ansible Merge Vars)'
+  merge_vars:
+    suffix_to_merge: 'apt_proxy_direct__to_merge'
+    merged_var_name: 'apt_proxy_direct'
+    expected_type: 'list'
+
 - name: 'Configure APT'
   template:
     src: "{{ file.src }}"

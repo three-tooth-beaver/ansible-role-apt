@@ -20,6 +20,10 @@
 #example_apt_other_repos__to_merge:
 #  - { name: 'example', url: 'http://repository.example.com', release: 'stable', repos: 'main' }
 #
+# A list of repositories that bypass the proxy (e.g. local repos)
+#example_apt_proxy_direct__to_merge:
+#  - 'https://localrepo.example.com'
+#
 # Example proxy setting
 #
 # apt_proxy_url: http://proxy.example.com:8000
