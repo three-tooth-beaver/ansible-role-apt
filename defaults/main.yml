@@ -40,6 +40,9 @@ ubuntu_repo_mirror: 'http://archive.ubuntu.com/ubuntu'
 # Which keyserver to use
 repository_keyserver: 'keyserver.ubuntu.com'
 
+# Send daily email reports for available upgrades
+apt_listchanges_installed: false
+
 # Unattended upgrades settings
 #  - Enable the update/upgrade script (0=disable)
 apt_periodic_enable: 1

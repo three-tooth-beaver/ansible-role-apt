@@ -105,3 +105,16 @@
   loop_control:
     loop_var: 'repo'
   when: apt_other_repos | length > 0
+
+- name: 'Disable apt-listchanges'
+  apt:
+    name: 'apt-listchanges'
+    state: 'absent'
+    purge: true
+  when: not apt_listchanges_installed
+
+- name: 'Enable apt-listchanges'
+  apt:
+    name: 'apt-listchanges'
+    state: 'present'
+  when: apt_listchanges_installed
