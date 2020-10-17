@@ -6,9 +6,11 @@
       import_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
         tasks_from: 'proxy_server.yml'
+
     - name: 'Configure APT'
       import_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+
     - name: 'Install test package'
       apt:
         name: 'ansible-apt-test-en'
