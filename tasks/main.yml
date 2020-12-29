@@ -79,8 +79,8 @@
   apt_key:
     data: "{{ lookup('url', 'http://{{ repository_keyserver }}/pks/lookup?op=get&search=0x{{ keyserver_key.keyid }}', split_lines=False) }}"
   environment:
-    HTTP_PROXY: "{{ apt_proxy_url }}"
-    HTTPS_PROXY: "{{ apt_proxy_url }}"
+    HTTP_PROXY: "{{ apt_proxy_url | default(omit) }}"
+    HTTPS_PROXY: "{{ apt_proxy_url |default(omit) }}"
   loop: "{{ apt_repo_keys_keyserver|default([]) }}"
   loop_control:
     loop_var: 'keyserver_key'
@@ -90,8 +90,8 @@
   apt_key:
     data: "{{ lookup('url', '{{ url_key.url }}', split_lines=False) }}"
   environment:
-    HTTP_PROXY: "{{ apt_proxy_url }}"
-    HTTPS_PROXY: "{{ apt_proxy_url }}"
+    HTTP_PROXY: "{{ apt_proxy_url | default(omit) }}"
+    HTTPS_PROXY: "{{ apt_proxy_url |default(omit) }}"
   loop: "{{ apt_repo_keys_url|default([]) }}"
   loop_control:
     loop_var: 'url_key'
