@@ -26,18 +26,21 @@
 
 - name: 'Configure APT'
   template:
-    src: "{{ file.src }}"
-    dest: "{{ file.dest }}"
+    src: "{{ file['src'] }}"
+    dest: "{{ file['dest']}}"
   loop:
-    - { src: 'apt-periodic.j2', dest: '/etc/apt/apt.conf.d/10periodic' }
-    - { src: 'apt-unattended.j2', dest: '/etc/apt/apt.conf.d/50unattended-upgrades' }
-    - { src: 'apt-proxy.j2', dest: '/etc/apt/apt.conf.d/01proxy' }
+    - src: 'apt-periodic.j2'
+      dest: '/etc/apt/apt.conf.d/10periodic'
+    - src: 'apt-unattended.j2'
+      dest: '/etc/apt/apt.conf.d/50unattended-upgrades'
+    - src: 'apt-proxy.j2'
+      dest: '/etc/apt/apt.conf.d/01proxy'
   loop_control:
     loop_var: 'file'
 
 - name: 'Configure Debian main repos'
   apt_repository:
-    repo: "deb {{ debian_repo_mirror }}/{{ deb_repo.distro }} {{ deb_repo.release }} main contrib non-free"
+    repo: "deb {{ debian_repo_mirror }}/{{ deb_repo['distro'] }} {{ deb_repo['release'] }} main contrib non-free"
     filename: 'debian'
   loop:
     - distro: 'debian'
@@ -75,12 +78,13 @@
       - 'unattended-upgrades'
       - 'curl'
     state: 'present'
+    update_cache: true
 
   # Rather clunky workaround, but the apt_key module does not
   # support proxies yet: https://github.com/ansible/ansible/issues/31691
 - name: 'Configure repo keys from keyserver'
   apt_key:
-    data: "{{ lookup('url', 'http://{{ repository_keyserver }}/pks/lookup?op=get&search=0x{{ keyserver_key.keyid }}', split_lines=False) }}"
+    data: "{{ lookup('url', 'http://{{ repository_keyserver }}/pks/lookup?op=get&search=0x{{ keyserver_key['keyid'] }}', split_lines=False) }}"
   environment:
     HTTP_PROXY: "{{ apt_proxy_url | default(omit) }}"
     HTTPS_PROXY: "{{ apt_proxy_url |default(omit) }}"
@@ -91,7 +95,7 @@
 
 - name: 'Configure repo keys from URLs'
   apt_key:
-    data: "{{ lookup('url', '{{ url_key.url }}', split_lines=False) }}"
+    data: "{{ lookup('url', '{{ url_key['url'] }}', split_lines=False) }}"
   environment:
     HTTP_PROXY: "{{ apt_proxy_url | default(omit) }}"
     HTTPS_PROXY: "{{ apt_proxy_url |default(omit) }}"
@@ -102,8 +106,8 @@
 
 - name: 'Configure other repos'
   apt_repository:
-    repo: "deb {{ repo.url }} {{ repo.release }} {{ repo.repos }}"
-    filename: "{{ repo.name }}"
+    repo: "deb {{ repo['url'] }} {{ repo['release'] }} {{ repo['repos'] }}"
+    filename: "{{ repo['name'] }}"
   loop: "{{ apt_other_repos|default([]) }}"
   loop_control:
     loop_var: 'repo'
