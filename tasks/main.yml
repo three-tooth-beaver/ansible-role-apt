@@ -51,7 +51,7 @@
       release: "{{ ansible_facts['distribution_release'] }}/updates"
   loop_control:
     loop_var: 'deb_repo'
-  when: ansible_facts['distribution']['release'] == "Debian"
+  when: ansible_facts['distribution'] == "Debian"
 
 - name: 'Configure Ubuntu main repos'
   apt_repository:
@@ -63,7 +63,7 @@
     - "{{ ansible_facts['distribution_release'] }}-security"
   loop_control:
     loop_var: 'ubt_repo'
-  when: ansible_facts['distribution']['release'] == "Ubuntu"
+  when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: 'Clean up default sources'
   template:
