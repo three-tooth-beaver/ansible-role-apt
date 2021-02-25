@@ -84,7 +84,7 @@
   # support proxies yet: https://github.com/ansible/ansible/issues/31691
 - name: 'Configure repo keys from keyserver'
   apt_key:
-    data: "{{ lookup('url', 'http://{{ repository_keyserver }}/pks/lookup?op=get&search=0x{{ keyserver_key['keyid'] }}', split_lines=False) }}"
+    data: "{{ lookup('url', 'http://{{ repository_keyserver }}/pks/lookup?op=get&search=0x{{ keyserver_key.keyid }}', split_lines=False) }}"
   environment:
     HTTP_PROXY: "{{ apt_proxy_url | default(omit) }}"
     HTTPS_PROXY: "{{ apt_proxy_url |default(omit) }}"
@@ -95,7 +95,7 @@
 
 - name: 'Configure repo keys from URLs'
   apt_key:
-    data: "{{ lookup('url', '{{ url_key['url'] }}', split_lines=False) }}"
+    data: "{{ lookup('url', '{{ url_key.url }}', split_lines=False) }}"
   environment:
     HTTP_PROXY: "{{ apt_proxy_url | default(omit) }}"
     HTTPS_PROXY: "{{ apt_proxy_url |default(omit) }}"
