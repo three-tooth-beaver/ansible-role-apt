@@ -40,24 +40,27 @@
     repo: "deb {{ debian_repo_mirror }}/{{ deb_repo.distro }} {{ deb_repo.release }} main contrib non-free"
     filename: 'debian'
   loop:
-    - { distro: 'debian', release: '{{ ansible_distribution_release }}' }
-    - { distro: 'debian', release: '{{ ansible_distribution_release }}-updates' }
-    - { distro: 'debian-security', release: '{{ ansible_distribution_release }}/updates' }
+    - distro: 'debian'
+      release: "{{ ansible_facts['distribution_release'] }}"
+    - distro: 'debian'
+      release: "{{ ansible_facts['distribution_release'] }}-updates"
+    - distro: 'debian-security'
+      release: "{{ ansible_facts['distribution_release'] }}/updates"
   loop_control:
     loop_var: 'deb_repo'
-  when: ansible_distribution == "Debian"
+  when: ansible_facts['distribution_release'] == "Debian"
 
 - name: 'Configure Ubuntu main repos'
   apt_repository:
     repo: "deb {{ ubuntu_repo_mirror }} {{ ubt_repo }} main restricted universe multiverse"
     filename: 'ubuntu'
   loop:
-    - "{{ ansible_distribution_release }}"
-    - "{{ ansible_distribution_release }}-updates"
-    - "{{ ansible_distribution_release }}-security"
+    - "{{ ansible_facts['distribution_release'] }}"
+    - "{{ ansible_facts['distribution_release'] }}-updates"
+    - "{{ ansible_facts['distribution_release'] }}-security"
   loop_control:
     loop_var: 'ubt_repo'
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_facts['distribution_release'] == "Ubuntu"
 
 - name: 'Clean up default sources'
   template:
