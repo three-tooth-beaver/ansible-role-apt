@@ -37,6 +37,9 @@ apt_proxy_whitelist:
 debian_repo_mirror: 'http://ftp.nl.debian.org/'
 ubuntu_repo_mirror: 'http://archive.ubuntu.com/ubuntu'
 
+# Enable Debian Backports
+debian_backports_enabled: false
+
 # Which keyserver to use
 repository_keyserver: 'keyserver.ubuntu.com'
 

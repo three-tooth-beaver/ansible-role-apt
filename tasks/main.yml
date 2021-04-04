@@ -49,6 +49,8 @@
       release: "{{ ansible_facts['distribution_release'] }}-updates"
     - distro: 'debian-security'
       release: "{{ ansible_facts['distribution_release'] }}/updates"
+    - distro: "{{ (debian_backports_enabled) | ternary('debian', omit) }}"
+      release: "{{ (debian_backports_enabled) | ternary(ansible_facts['distribution_release'] + '-backports', omit) }}"
   loop_control:
     loop_var: 'deb_repo'
   when: ansible_facts['distribution'] == "Debian"

@@ -17,6 +17,7 @@
         state: 'present'
         update_cache: true
   vars:
+    debian_backports_enabled: true
     ansible_apt_other_repos__to_merge:
       - { name: 'test-repo', url: 'http://repo.element-networks.nl', release: 'ansible-test', repos: 'main' }
     ansible_apt_repo_keys_url__to_merge:
