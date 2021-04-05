@@ -19,11 +19,16 @@
   vars:
     debian_backports_enabled: true
     ansible_apt_other_repos__to_merge:
-      - { name: 'test-repo', url: 'http://repo.element-networks.nl', release: 'ansible-test', repos: 'main' }
+      - name: 'test-repo'
+        url: 'http://repo.element-networks.nl'
+        release: 'ansible-test'
+        repos: 'main'
     ansible_apt_repo_keys_url__to_merge:
-      - { name: 'test-repo', url: 'http://repo.element-networks.nl/public.gpg' }
+      - name: 'test-repo'
+        url: 'http://repo.element-networks.nl/public.gpg'
     ansible__apt_repo_keys_keyserver__to_merge:
-      - { name: 'zabbix', keyid: 'A1848F5352D022B9471D83D0082AB56BA14FE591' }
+      - name: 'zabbix'
+        keyid: 'A1848F5352D022B9471D83D0082AB56BA14FE591'
     ansible_apt_proxy_direct__to_merge:
       - 'repo.element-networks.nl'
     apt_proxy_url: 'http://localhost:8000'
