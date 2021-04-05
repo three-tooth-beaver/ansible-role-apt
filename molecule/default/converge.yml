@@ -3,7 +3,7 @@
   hosts: 'all'
   tasks:
     - name: 'Install proxy server'
-      import_role:
+      include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
         tasks_from: 'proxy_server.yml'
 
