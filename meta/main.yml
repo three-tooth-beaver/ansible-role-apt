@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  author: Jeffrey van Pelt
+  author: thulium_drake
   description: Configures APT settings such as repo's, automatic updates and proxy. Requires Ansible Vars Merge
   company:
   role_name: apt
