@@ -2,11 +2,6 @@
 - name: 'Converge'
   hosts: 'all'
   tasks:
-    - name: 'Install proxy server'
-      include_role:
-        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
-        tasks_from: 'proxy_server.yml'
-
     - name: 'Configure APT'
       include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
@@ -17,6 +12,7 @@
         state: 'present'
         update_cache: true
   vars:
+    apt_is_proxy_server: true
     debian_backports_enabled: true
     ansible_apt_other_repos__to_merge:
       - name: 'test-repo'

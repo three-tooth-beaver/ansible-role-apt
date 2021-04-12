@@ -1,4 +1,8 @@
 ---
+- name: 'Set up proxy server'
+  include_tasks: 'proxy_server.yml'
+  when: apt_is_proxy_server
+
 # Configure repositories, keys and automatic upgrades
 - name: 'Merge repo_keys_keyserver (requires Ansible Merge Vars)'
   merge_vars:

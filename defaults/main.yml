@@ -23,11 +23,13 @@
 # A list of repositories that bypass the proxy (e.g. local repos)
 #example_apt_proxy_direct__to_merge:
 #  - 'https://localrepo.example.com'
-#
-# Example proxy setting
-#
-# apt_proxy_url: http://proxy.example.com:8000
-#
+
+# URL of the proxy to configure
+apt_proxy_url: 'http://proxy.example.com:8000'
+
+# The system for which this is true will be set up as the proxy server
+apt_is_proxy_server: false
+
 # A list of domains to whitelist in the proxy
 apt_proxy_whitelist:
   - 'ftp.nl.debian.org'
