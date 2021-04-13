@@ -27,14 +27,6 @@
 # URL of the proxy to configure
 apt_proxy_url: 'http://proxy.example.com:8000'
 
-# The system for which this is true will be set up as the proxy server
-apt_is_proxy_server: false
-
-# A list of domains to whitelist in the proxy
-apt_proxy_whitelist:
-  - 'ftp.nl.debian.org'
-  - 'archive.ubuntu.com'
-
 # Which base mirror to use for Debian and Ubuntu
 debian_repo_mirror: 'http://ftp.nl.debian.org/'
 ubuntu_repo_mirror: 'http://archive.ubuntu.com/ubuntu'
@@ -125,3 +117,27 @@ apt_unattended_autoreboot_time: '02:00'
 
 # Limit APT's bandwidth usage, e.g. 5000 Kbit/sec
 apt_unattended_downloadlimit: 5000
+
+###
+# Proxy server section
+###
+# The system for which this is true will be set up as the proxy server
+apt_is_proxy_server: false
+
+# Enable object caching
+apt_proxy_cache_enabled: true
+
+# Directory to store all cached objects
+apt_proxy_cache_dir: '/var/lib/squid-deb-proxy'
+
+# Enable domain filtering
+apt_proxy_whitelist_enabled: true
+
+# A list of domains to whitelist in the proxy
+apt_proxy_whitelist:
+  - 'ftp.nl.debian.org'
+  - 'archive.ubuntu.com'
+
+# A list of packages that are blacklisted
+apt_proxy_package_blacklist:
+  - 'nonexisting'

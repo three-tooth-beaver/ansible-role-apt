@@ -6,19 +6,43 @@
     state: 'present'
     update_cache: true
 
+- name: 'Ensure configuration'
+  template:
+    dest: '/etc/squid-deb-proxy/squid-deb-proxy.conf'
+    src: 'squid-deb-proxy.conf.j2'
+    mode: 0644
+    owner: 'root'
+    group: 'root'
+
+- name: 'Ensure cache directory'
+  file:
+    path: "{{ apt_proxy_cache_dir }}"
+    state: 'directory'
+    owner: 'proxy'
+    group: 'proxy'
+    mode: 0755
+
 - name: 'Enable service'
   service:
     name: 'squid-deb-proxy'
     state: 'started'
     enabled: true
 
-- name: 'Ensure whitelist'
+- name: 'Ensure domain whitelist'
   template:
-    src: '10-managed.j2'
+    src: 'domain-whitelist.acl.j2'
     dest: '/etc/squid-deb-proxy/mirror-dstdomain.acl.d/10-managed'
     owner: 'root'
     group: 'root'
     mode: 0644
   notify: 'reload squid'
 
+- name: 'Ensure package blacklist'
+  template:
+    src: 'package-blacklist.j2'
+    dest: '/etc/squid-deb-proxy/pkg-blacklist.d/10-managed'
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+  notify: 'reload squid'
 - meta: 'flush_handlers'
