@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for package in apt_proxy_package_blacklist %}
+{{ package }}
+{% endfor %}
