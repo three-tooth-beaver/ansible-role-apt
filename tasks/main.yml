@@ -77,11 +77,6 @@
     loop_var: 'ubt_repo'
   when: ansible_facts['distribution'] == "Ubuntu"
 
-- name: 'Clean up default sources'
-  template:
-    src: 'sources.list.j2'
-    dest: '/etc/apt/sources.list'
-
 - name: 'Install supporting packages'
   apt:
     name:
@@ -124,6 +119,11 @@
   loop_control:
     loop_var: 'repo'
   when: apt_other_repos | length > 0
+
+- name: 'Clean up default sources'
+  template:
+    src: 'sources.list.j2'
+    dest: '/etc/apt/sources.list'
 
 - name: 'Disable apt-listchanges'
   apt:
