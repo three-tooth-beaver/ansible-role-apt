@@ -21,6 +21,9 @@
     owner: 'proxy'
     group: 'proxy'
     mode: 0755
+  notify: 'generate squid cache'
+
+- meta: 'flush_handlers'
 
 - name: 'Enable service'
   service:
@@ -45,4 +48,5 @@
     group: 'root'
     mode: 0644
   notify: 'reload squid'
+
 - meta: 'flush_handlers'
