@@ -4,11 +4,12 @@
     name: 'squid-deb-proxy'
     state: 'reloaded'
 
-- name: 'generate squid cache'
-  block:
-    - name: 'Generate cache directory'
-      command: squid -f /etc/squid-deb-proxy/squid-deb-proxy.conf -z -N
-    - name: 'Restart squid-deb-proxy'
-      service:
-        name: 'squid-deb-proxy'
-        state: 'restarted'
+- name: 'Generate cache directory'
+  command: squid -f /etc/squid-deb-proxy/squid-deb-proxy.conf -z -N
+  listen: 'generate squid cache'
+
+- name: 'Restart squid-deb-proxy'
+  service:
+    name: 'squid-deb-proxy'
+    state: 'restarted'
+  listen: 'generate squid cache'
