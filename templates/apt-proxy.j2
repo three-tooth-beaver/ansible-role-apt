@@ -1,5 +1,5 @@
 # {{ ansible_managed }}
-{% if apt_proxy_url is defined -%}
+{% if apt_proxy_url != '' -%}
 {% for url in apt_proxy_direct %}
 Acquire::http:proxy::{{ url }} DIRECT;
 {% endfor %}
