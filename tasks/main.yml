@@ -52,10 +52,10 @@
       skip: false
     - distro: 'debian'
       release: "{{ ansible_facts['distribution_release'] }}-updates"
-      skip: false
+      skip: "{{ not debian_testing }}"
     - distro: 'debian-security'
       release: "{{ ansible_facts['distribution_release'] }}/updates"
-      skip: false
+      skip: "{{ not debian_testing }}"
     - distro: 'debian'
       release: "{{ ansible_facts['distribution_release'] + '-backports' }}"
       skip: "{{ not debian_backports_enabled }}"

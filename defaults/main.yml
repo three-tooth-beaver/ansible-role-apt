@@ -34,6 +34,9 @@ ubuntu_repo_mirror: 'http://archive.ubuntu.com/ubuntu'
 # Enable Debian Backports
 debian_backports_enabled: false
 
+# Disable debian/updates repository (use in case of Debian Testing/Unstable)
+debian_testing: false
+
 # Which keyserver to use
 repository_keyserver: 'keyserver.ubuntu.com'
 
