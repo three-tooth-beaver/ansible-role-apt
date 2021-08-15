@@ -54,8 +54,11 @@
       release: "{{ ansible_facts['distribution_release'] }}-updates"
       skip: "{{ debian_testing }}"
     - distro: 'debian-security'
-      release: "{{ ansible_facts['distribution_release'] }}/updates"
-      skip: "{{ debian_testing }}"
+      release: "{{ ansible_facts['distribution_release'] }}-security"
+      skip: "{{ (ansible_facts['distribution_major_version'] >= 11) | ternary(debian_testing, false) }}"
+    - distro: 'debian-security'
+      release: "{{ ansible_facts['distribution_release'] }}-security"
+      skip: "{{ (ansible_facts['distribution_major_version'] <= 10) | ternary(false, debian_testing) }}"
     - distro: 'debian'
       release: "{{ ansible_facts['distribution_release'] + '-backports' }}"
       skip: "{{ not debian_backports_enabled }}"
