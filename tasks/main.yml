@@ -43,41 +43,54 @@
     loop_var: 'file'
 
 - name: 'Configure Debian main repos'
-  apt_repository:
-    repo: "deb {{ debian_repo_mirror }}/{{ deb_repo['distro'] }} {{ deb_repo['release'] }} main contrib non-free"
-    filename: 'debian'
-  loop:
-    - distro: 'debian'
-      release: "{{ ansible_facts['distribution_release'] }}"
-      skip: false
-    - distro: 'debian'
-      release: "{{ ansible_facts['distribution_release'] }}-updates"
-      skip: "{{ debian_testing }}"
-    - distro: 'debian-security'
-      release: "{{ ansible_facts['distribution_release'] }}-security"
-      skip: "{{ (ansible_facts['distribution_major_version'] >= '11') | ternary(debian_testing, true) }}"
-    - distro: 'debian-security'
-      release: "{{ ansible_facts['distribution_release'] }}/updates"
-      skip: "{{ (ansible_facts['distribution_major_version'] <= '10') | ternary(debian_testing, true) }}"
-    - distro: 'debian'
-      release: "{{ ansible_facts['distribution_release'] + '-backports' }}"
-      skip: "{{ not debian_backports_enabled }}"
-  loop_control:
-    loop_var: 'deb_repo'
+  copy:
+    content: |
+      # This file is managed by Ansible.
+      # YOUR CHANGES WILL BE LOST!
+      {% for deb_repo in deb_repos %}
+      {% if not deb_repo['skip'] %}
+      deb {{ debian_repo_mirror }}/{{ deb_repo['distro'] }} {{ deb_repo['release'] }} main contrib non-free
+      {% endif %}
+      {% endfor %}
+    dest: '/etc/apt/sources.list.d/debian.list'
+  notify: 'update apt cache'
+  vars:
+    deb_repos:
+      - distro: 'debian'
+        release: "{{ ansible_facts['distribution_release'] }}"
+        skip: false
+      - distro: 'debian'
+        release: "{{ ansible_facts['distribution_release'] }}-updates"
+        skip: "{{ debian_testing }}"
+      - distro: 'debian-security'
+        release: "{{ ansible_facts['distribution_release'] }}-security"
+        skip: "{{ (ansible_facts['distribution_major_version'] >= '11') | ternary(debian_testing, true) }}"
+      - distro: 'debian-security'
+        release: "{{ ansible_facts['distribution_release'] }}/updates"
+        skip: "{{ (ansible_facts['distribution_major_version'] <= '10') | ternary(debian_testing, true) }}"
+      - distro: 'debian'
+        release: "{{ ansible_facts['distribution_release'] + '-backports' }}"
+        skip: "{{ not debian_backports_enabled }}"
   when:
     - ansible_facts['distribution'] == "Debian"
-    - not deb_repo['skip']
 
 - name: 'Configure Ubuntu main repos'
-  apt_repository:
-    repo: "deb {{ ubuntu_repo_mirror }} {{ ubt_repo }} main restricted universe multiverse"
-    filename: 'ubuntu'
-  loop:
-    - "{{ ansible_facts['distribution_release'] }}"
-    - "{{ ansible_facts['distribution_release'] }}-updates"
-    - "{{ ansible_facts['distribution_release'] }}-security"
-  loop_control:
-    loop_var: 'ubt_repo'
+  copy:
+    content: |
+      # This file is managed by Ansible.
+      # YOUR CHANGES WILL BE LOST!
+      {% for ubt_repo in ubt_repos %}
+      {% if not deb_repo['skip'] %}
+      deb {{ ubuntu_repo_mirror }} {{ ubt_repo }} main restricted universe multiverse
+      {% endif %}
+      {% endfor %}
+    dest: '/etc/apt/sources.list.d/ubuntu.list'
+  notify: 'update apt cache'
+  vars:
+    ubt_repos:
+      - "{{ ansible_facts['distribution_release'] }}"
+      - "{{ ansible_facts['distribution_release'] }}-updates"
+      - "{{ ansible_facts['distribution_release'] }}-security"
   when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: 'Install supporting packages'
@@ -115,9 +128,13 @@
   when: apt_repo_keys_url | length > 0
 
 - name: 'Configure other repos'
-  apt_repository:
-    repo: "deb {{ repo['url'] }} {{ repo['release'] }} {{ repo['repos'] }}"
-    filename: "{{ repo['name'] }}"
+  copy:
+    content: |
+      # This file is managed by Ansible.
+      # YOUR CHANGES WILL BE LOST!
+      deb {{ repo['url'] }} {{ repo['release'] }} {{ repo['repos'] }}
+    dest: "/etc/apt/sources.list.d/{{ repo['name'] }}.list"
+  notify: 'update apt cache'
   loop: "{{ apt_other_repos|default([]) }}"
   loop_control:
     loop_var: 'repo'
