@@ -80,9 +80,7 @@
       # This file is managed by Ansible.
       # YOUR CHANGES WILL BE LOST!
       {% for ubt_repo in ubt_repos %}
-      {% if not deb_repo['skip'] %}
       deb {{ ubuntu_repo_mirror }} {{ ubt_repo }} main restricted universe multiverse
-      {% endif %}
       {% endfor %}
     dest: '/etc/apt/sources.list.d/ubuntu.list'
   notify: 'update apt cache'
