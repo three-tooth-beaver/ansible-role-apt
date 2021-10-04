@@ -28,7 +28,7 @@
 apt_proxy_url: 'http://proxy.example.com:8000'
 
 # Which base mirror to use for Debian and Ubuntu
-debian_repo_mirror: 'http://ftp.nl.debian.org/'
+debian_repo_mirror: 'http://ftp.nl.debian.org'
 ubuntu_repo_mirror: 'http://archive.ubuntu.com/ubuntu'
 
 # Enable Debian Backports
