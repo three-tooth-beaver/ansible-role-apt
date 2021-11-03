@@ -49,4 +49,13 @@
     mode: 0644
   notify: 'reload squid'
 
+- name: 'Ensure allowed networks'
+  template:
+    src: 'allowed-networks.j2'
+    dest: '/etc/squid-deb-proxy/allowed-networks-src.acl.d'
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+  notify: 'reload squid'
+
 - meta: 'flush_handlers'

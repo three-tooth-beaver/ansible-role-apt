@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for network in apt_proxy_allowed_networks %}
+{{ network }}
+{% endfor %}

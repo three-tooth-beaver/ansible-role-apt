@@ -144,3 +144,7 @@ apt_proxy_whitelist:
 # A list of packages that are blacklisted
 apt_proxy_package_blacklist:
   - 'nonexisting'
+
+apt_proxy_allowed_networks:
+  - '10.0.0.0/8'
+  - 'fe80::/10'
