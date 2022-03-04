@@ -1,10 +1,14 @@
 // {{ ansible_managed }}
 Unattended-Upgrade::Origins-Pattern {
-  {% if ansible_facts['distribution'] == 'Debian' -%}
+  {% if ansible_facts['distribution'] == 'Debian' %}
+  {%- if ansible_facts['distribution_major_version'] >= '10' -%}
   "origin=Debian,codename=${distro_codename},label=Debian-Security;"
-  {% elif ansible_facts['distribution'] == 'Ubuntu' -%}
+  {% else %}
+  "origin=Debian,codename=${distro_codename}-security,label=Debian-Security;"
+  {% endif %}
+  {%- elif ansible_facts['distribution'] == 'Ubuntu' -%}
   "${distro_id} {$distro_codename}-security";
-	"${distro_id} {$distro_codename}-updates";
+    "${distro_id} {$distro_codename}-updates";
   {% endif %}
   {%- for origin in apt_unattended_origins -%}
   "{{ origin }}";
